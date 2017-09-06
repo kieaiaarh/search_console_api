@@ -72,8 +72,6 @@ end
 
 if __FILE__ == $0
   search_console = SearchConsole.new
-  webmaster = search_console.webmaster
-  lines = []
   pb = ProgressBar.create
   (0..100).each do |i|
   # (0..3).each do |i|
