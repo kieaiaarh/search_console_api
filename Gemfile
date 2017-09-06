@@ -4,3 +4,4 @@ gem 'googleauth'
 gem 'pry'
 gem 'aws-sdk', '~> 3'
 gem 'ruby-progressbar'
+gem 'dotenv-rails', groups: [:development, :test]
