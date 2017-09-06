@@ -4,6 +4,7 @@ require 'pry'
 require 'active_support/all'
 require 'aws-sdk'
 require "ruby-progressbar"
+require 'dotenv/load'
 
 class SearchConsole
   attr_accessor :webmaster, :request_object
@@ -11,7 +12,7 @@ class SearchConsole
   # as service_account
   CREDENTIAL_STORE_FILE = 'search_console.json'.freeze
   SCOPE = 'https://www.googleapis.com/auth/webmasters.readonly'.freeze
-  SITE_URL = ''.freeze
+  SITE_URL = ENV['SITE_URL'].freeze
   ROW_LIMIT = 5000
   START_ROW = 0
 
@@ -66,15 +67,16 @@ class SearchConsole
     end
 
     def first_date
-      @first_date ||= current_date - 3.months
+      # @first_date ||= current_date - 3.months
+      @first_date ||= current_date - 1.months
     end
 end
 
 if __FILE__ == $0
   search_console = SearchConsole.new
   pb = ProgressBar.create
-  (0..100).each do |i|
-  # (0..3).each do |i|
+  # (0..100).each do |i|
+  (0..1).each do |i|
     break if search_console.latest_date < search_console.target_date(i)
 
     pb.increment
@@ -91,11 +93,12 @@ if __FILE__ == $0
         impressions: row.impressions,
         keyword: row.keys.first,
         position: row.position
-      }.to_json
+      }
+      # }.to_json
     }
 
-    open("./log/#{search_console.request_object[:start_date]}.json", 'w') do |io|
-      JSON.dump(daily_keywords_analytics, io)
+    open("./log/#{search_console.request_object[:start_date]}.json", 'w') do |file|
+      JSON.dump(daily_keywords_analytics, file)
     end
     sleep 0.1
   end
